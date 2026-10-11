@@ -1,3 +1,12 @@
+Aquí tienes el código completo con dos soluciones clave para celular:
+
+Pantalla de inicio 100% visible en cualquier celular: Reduje márgenes y paddings, ajusté los textos y aseguré que la tarjeta del menú principal flote perfectamente centrada con el botón "¡COMENZAR JUEGO!" siempre visible.
+
+Controles táctiles súper cómodos e intuitivos: Agregué dos botones táctiles flotantes en pantalla (flechas ⬅️ y ➡️ abajo a la izquierda para moverse) y una zona de salto táctil gigante (área derecha) con la palabra "SALTO" sutil para que brincar con BTTY sea facilísimo desde la pantalla del celular.
+
+Copia este código y reemplaza por completo el contenido de tu archivo index.html:
+
+HTML
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -22,12 +31,12 @@
       justify-content: center;
       min-height: 100vh;
       overflow: hidden;
-      touch-action: none; /* Evita scrolls molestos en el celu */
+      touch-action: none;
     }
     #game-container {
       position: relative;
       width: 100vw;
-      height: 56.25vw; /* Mantiene proporción 16:9 perfecta en celulares */
+      height: 56.25vw;
       max-width: 850px;
       max-height: 478px;
       background: #000;
@@ -51,30 +60,27 @@
     .overlay {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.96);
+      background: rgba(15, 23, 42, 0.95);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: space-evenly;
       color: #fff;
       text-align: center;
-      padding: 15px;
+      padding: 10px 15px;
       z-index: 10;
-      overflow-y: auto;
     }
     .logo-img {
-      max-width: 70px;
-      margin-bottom: 5px;
+      max-height: 45px;
+      width: auto;
     }
     .overlay h1 {
-      font-size: 1.6rem;
+      font-size: 1.3rem;
       color: #facc15;
-      margin-bottom: 5px;
-      text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+      text-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
     }
     .overlay p {
-      font-size: 0.85rem;
-      margin-bottom: 10px;
+      font-size: 0.8rem;
       max-width: 420px;
       color: #cbd5e1;
     }
@@ -82,38 +88,36 @@
       background: rgba(30, 41, 59, 0.9);
       border: 1px solid #475569;
       border-radius: 6px;
-      padding: 8px 12px;
-      margin-bottom: 12px;
+      padding: 6px 12px;
       text-align: left;
       max-width: 420px;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: #e2e8f0;
     }
     .instructions-box li {
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
     .stats-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 6px;
       width: 100%;
-      max-width: 350px;
-      margin-bottom: 10px;
+      max-width: 320px;
     }
     .stat-card {
       background: rgba(30, 41, 59, 0.9);
       border: 1px solid #475569;
       border-radius: 6px;
-      padding: 6px;
+      padding: 4px;
       text-align: center;
     }
     .stat-card .val {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 800;
       color: #facc15;
     }
     .stat-card .lbl {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: #94a3b8;
       text-transform: uppercase;
     }
@@ -121,27 +125,82 @@
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
       color: #000;
       font-weight: 800;
-      font-size: 1rem;
-      padding: 10px 25px;
+      font-size: 0.95rem;
+      padding: 8px 24px;
       border: none;
-      border-radius: 25px;
+      border-radius: 20px;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.5);
-      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.5);
     }
     .fb-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       background: #1877f2;
       color: #fff;
       text-decoration: none;
       font-weight: 700;
-      font-size: 0.8rem;
-      padding: 6px 14px;
-      border-radius: 15px;
+      font-size: 0.75rem;
+      padding: 5px 12px;
+      border-radius: 12px;
     }
     .hidden { display: none !important; }
+
+    /* CONTROLES TÁCTILES EN PANTALLA */
+    .touch-controls {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .d-pad {
+      display: flex;
+      gap: 12px;
+      pointer-events: auto;
+    }
+    .touch-btn {
+      width: 58px;
+      height: 58px;
+      background: rgba(255, 255, 255, 0.25);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      color: white;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      touch-action: manipulation;
+    }
+    .touch-btn:active {
+      background: rgba(250, 204, 21, 0.6);
+      border-color: #facc15;
+    }
+    .jump-zone {
+      width: 80px;
+      height: 58px;
+      background: rgba(245, 158, 11, 0.35);
+      border: 2px solid rgba(245, 158, 11, 0.7);
+      border-radius: 16px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      backdrop-filter: blur(4px);
+      touch-action: manipulation;
+    }
+    .jump-zone:active {
+      background: rgba(245, 158, 11, 0.7);
+    }
   </style>
 </head>
 <body>
@@ -153,14 +212,14 @@
     <div id="start-screen" class="overlay">
       <img src="logo_beta.png" alt="BETA Logo" class="logo-img" onerror="this.style.display='none'">
       <h1>BETA PLAY</h1>
-      <p>¡Bienvenido! Ayuda a BTTY a cumplir las normas de EPP.</p>
+      <p>Ayuda a BTTY a mantenerse segura cumpliendo las normas de EPP.</p>
       
       <div class="instructions-box">
         <b>🎯 Instrucciones:</b>
         <ul>
-          <li><b>Muévete:</b> Toca la parte izquierda/derecha de la pantalla.</li>
-          <li><b>Salta:</b> Toca la parte superior para esquivar peligros.</li>
-          <li><b>EPP:</b> Recolecta elementos de seguridad para sumar puntos.</li>
+          <li><b>Moverse:</b> Usa las flechas ⬅️ ➡️ o botones táctiles.</li>
+          <li><b>Saltar:</b> Presiona la barra Espaciadora o el botón SALTO.</li>
+          <li><b>Recolectar:</b> Junta cascos y EPP para ganar puntos.</li>
         </ul>
       </div>
 
@@ -170,7 +229,7 @@
     <!-- PANTALLA DE GAME OVER -->
     <div id="game-over-screen" class="overlay hidden">
       <img src="logo_beta.png" alt="BETA Logo" class="logo-img" onerror="this.style.display='none'">
-      <h1 style="color: #f87171; font-size: 1.4rem;">¡ACCIDENTE LABORAL!</h1>
+      <h1 style="color: #f87171;">¡ACCIDENTE LABORAL!</h1>
       
       <div class="stats-container">
         <div class="stat-card">
@@ -197,6 +256,15 @@
         👍 ¡Conócenos y danos Like en Facebook!
       </a>
     </div>
+
+    <!-- CONTROLES TÁCTILES VISIBLES EN PANTALLA -->
+    <div id="touch-controls" class="touch-controls hidden">
+      <div class="d-pad">
+        <div class="touch-btn" id="btn-left">⬅️</div>
+        <div class="touch-btn" id="btn-right">➡️</div>
+      </div>
+      <div class="jump-zone" id="btn-jump">SALTO 🦘</div>
+    </div>
   </div>
 
   <script>
@@ -205,6 +273,7 @@
 
     const startScreen = document.getElementById('start-screen');
     const gameOverScreen = document.getElementById('game-over-screen');
+    const touchControls = document.getElementById('touch-controls');
     const startBtn = document.getElementById('start-btn');
     const restartBtn = document.getElementById('restart-btn');
 
@@ -282,6 +351,7 @@
       { name: 'Fuego', img: imgFuego }
     ];
 
+    // Controles de Teclado
     window.addEventListener('keydown', (e) => {
       if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
       if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
@@ -297,25 +367,18 @@
       if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') keys.up = false;
     });
 
-    canvas.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      const rect = canvas.getBoundingClientRect();
-      const canvasX = (touch.clientX - rect.left) * (canvas.width / rect.width);
-      const canvasY = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    // Eventos Táctiles con botones flotantes
+    const btnLeft = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
+    const btnJump = document.getElementById('btn-jump');
 
-      if (canvasY < canvas.height / 2) {
-        jump();
-      } else {
-        if (canvasX < canvas.width / 2) {
-          player.vx = -player.speed;
-        } else {
-          player.vx = player.speed;
-        }
-      }
-    }, { passive: false });
+    btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); keys.left = true; });
+    btnLeft.addEventListener('touchend', (e) => { e.preventDefault(); keys.left = false; });
 
-    canvas.addEventListener('touchend', () => { player.vx = 0; });
+    btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); keys.right = true; });
+    btnRight.addEventListener('touchend', (e) => { e.preventDefault(); keys.right = false; });
+
+    btnJump.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); });
 
     function jump() {
       if (gameState === 'PLAYING' && player.isGrounded) {
@@ -419,7 +482,7 @@
     function spawnObjects() {
       if (frame % 85 === 0) {
         const type = eppTypes[Math.floor(Math.random() * eppTypes.length)];
-        items.push({ x: canvas.width + 40, y: Math.random() < 0.5 ? 210 : 285, width: 40, height: 40, type: type });
+        items.push({ x: canvas.width + 40, y: Math.random() < 0.5 ? 210 : 285, width: 60, height: 60, type: type });
       }
 
       if (frame % 125 === 0) {
@@ -436,7 +499,6 @@
 
       if (keys.left && player.x > 15) player.x -= player.speed;
       if (keys.right && player.x < canvas.width - player.width - 15) player.x += player.speed;
-      player.x += player.vx;
 
       player.vy += player.gravity;
       player.y += player.vy;
@@ -532,6 +594,7 @@
 
       startScreen.classList.add('hidden');
       gameOverScreen.classList.add('hidden');
+      touchControls.classList.remove('hidden');
       initParticles();
       requestAnimationFrame(gameLoop);
     }
@@ -548,6 +611,7 @@
       resHits.textContent = hazardsHit;
       resAcc.textContent = `${accuracy}%`;
 
+      touchControls.classList.add('hidden');
       gameOverScreen.classList.remove('hidden');
     }
 
