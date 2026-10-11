@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Abeja de Seguridad EPP - Juego Fábrica</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body {
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+    #game-container {
+      position: relative;
+      width: 100%;
+      max-width: 850px;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #334155;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      z-index: 10;
+    }
+    .beta-logo {
+      max-width: 130px;
+      max-height: 60px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+    .overlay h1 {
+      font-size: 2rem;
+      color: #facc15;
+      margin-bottom: 8px;
+      text-shadow: 0 0 15px rgba(250, 204, 21, 0.5);
+    }
+    .overlay p {
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+      max-width: 480px;
+      line-height: 1.4;
+      color: #cbd5e1;
+    }
+    .instructions-box {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid #475569;
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin-bottom: 18px;
+      text-align: left;
+      max-width: 480px;
+      font-size: 0.88rem;
+      color: #e2e8f0;
+    }
+    .instructions-box li {
+      margin-bottom: 5px;
+    }
+    
+    /* Panel de Estadísticas para Game Over */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+      max-width: 420px;
+      margin-bottom: 15px;
+    }
+    .stat-card {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid #475569;
+      border-radius: 10px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .stat-card .label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .stat-card .value {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 2px;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #000;
+      font-weight: 800;
+      font-size: 1.1rem;
+      padding: 10px 30px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+      transition: all 0.2s ease;
+      margin-bottom: 12px;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
+    
+    /* Enlace a Facebook */
+    .fb-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #38bdf8;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      transition: all 0.2s ease;
+    }
+    .fb-link:hover {
+      background: rgba(56, 189, 248, 0.2);
+      color: #7dd3fc;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game-container">
+    <canvas id="canvas" width="850" height="478"></canvas>
+
+    <!-- PANTALLA DE INICIO -->
+    <div id="start-screen" class="overlay">
+      <img src="logo_beta.png" alt="Logo Beta" class="beta-logo" onerror="this.style.display='none'">
+      <h1>BETA PLAY</h1>
+      <p>¡Bienvenido! Ayuda a BTTY a mantenerse segura cumpliendo las normas.</p>
+      
+      <div class="instructions-box">
+        <b>🎯 Instrucciones:</b>
+        <ul>
+          <li><b>Muévete</b> a los lados (Teclas A/D o tocando la pantalla).</li>
+          <li><b>Salta</b> (Barra Espaciadora o tocando arriba) para evitar obstáculos.</li>
+          <li><b>Recolecta el EPP</b> para protegerte y acumular puntos.</li>
+        </ul>
+      </div>
+
+      <button class="btn" id="start-btn">¡COMENZAR JUEGO!</button>
+    </div>
+
+    <!-- PANTALLA DE FIN DE JUEGO (GAME OVER) -->
+    <div id="game-over-screen" class="overlay hidden">
+      <img src="logo_beta.png" alt="Logo Beta" class="beta-logo" onerror="this.style.display='none'">
+      <h1 style="color: #f87171; font-size: 1.8rem; margin-bottom: 4px;">¡ACCIDENTE LABORAL!</h1>
+      <p style="margin-bottom: 12px;">Resumen del desempeño en la fábrica:</p>
+
+      <!-- Panel de Resultados / Estadísticas -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="label">Puntaje Total</span>
+          <span class="value" id="stat-score" style="color: #facc15;">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="label">Aciertos (EPP)</span>
+          <span class="value" id="stat-hits" style="color: #38bdf8;">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="label">Fallos (Impactos)</span>
+          <span class="value" id="stat-misses" style="color: #f87171;">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="label">Efectividad</span>
+          <span class="value" id="stat-accuracy" style="color: #4ade80;">0%</span>
+        </div>
+      </div>
+
+      <button class="btn" id="restart-btn">JUGAR DE NUEVO 🔄</button>
+
+      <!-- Invitación y Link a Facebook -->
+      <a href="https://www.facebook.com/betaPrevisoresdeRiesgos" target="_blank" rel="noopener noreferrer" class="fb-link">
+        👍 ¡Conócenos y déjanos tu Like en Facebook!
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const startScreen = document.getElementById('start-screen');
+    const gameOverScreen = document.getElementById('game-over-screen');
+    const startBtn = document.getElementById('start-btn');
+    const restartBtn = document.getElementById('restart-btn');
+
+    // Elementos del HUD de Resultados
+    const statScore = document.getElementById('stat-score');
+    const statHits = document.getElementById('stat-hits');
+    const statMisses = document.getElementById('stat-misses');
+    const statAccuracy = document.getElementById('stat-accuracy');
+
+    // --- CARGAR IMÁGENES DEL FONDO Y PERSONAJE ---
+    const bgImage = new Image();
+    bgImage.src = 'fabrica.png';
+
+    const beeFrame1 = new Image();
+    beeFrame1.src = 'abeja1.png';
+
+    const beeFrame2 = new Image();
+    beeFrame2.src = 'abeja2.png';
+
+    // --- CARGAR IMÁGENES DE EPP ---
+    const imgCasco = new Image(); imgCasco.src = 'casco.png';
+    const imgGafas = new Image(); imgGafas.src = 'gafas.png';
+    const imgGuantes = new Image(); imgGuantes.src = 'guantes.png';
+    const imgAuditivos = new Image(); imgAuditivos.src = 'auditivos.png';
+    const imgChaleco = new Image(); imgChaleco.src = 'chaleco.png';
+
+    // --- CARGAR IMÁGENES DE OBSTÁCULOS ---
+    const imgBarril = new Image(); imgBarril.src = 'barril.png';
+    const imgToxico = new Image(); imgToxico.src = 'toxico.png';
+    const imgFuego = new Image(); imgFuego.src = 'fuego.png';
+
+    let gameState = 'START';
+    let score = 0;
+    let lives = 5;
+    let eppCount = 0;
+    let hazardHits = 0; // Registro de fallos (impactos)
+    let frame = 0;
+    let gameSpeed = 5;
+
+    let particles = [];
+
+    const player = {
+      x: 100,
+      y: 300,
+      width: 95,
+      height: 95,
+      vy: 0,
+      vx: 0,
+      speed: 5.5,
+      gravity: 0.35,
+      jumpForce: -11,
+      groundY: 300,
+      isGrounded: false
+    };
+
+    const keys = { left: false, right: false, up: false };
+    let obstacles = [];
+    let items = [];
+
+    const eppTypes = [
+      { name: 'Casco', points: 10, img: imgCasco },
+      { name: 'Gafas', points: 15, img: imgGafas },
+      { name: 'Guantes', points: 10, img: imgGuantes },
+      { name: 'Auditivos', points: 15, img: imgAuditivos },
+      { name: 'Chaleco', points: 20, img: imgChaleco }
+    ];
+
+    const hazardTypes = [
+      { name: 'Barril', img: imgBarril },
+      { name: 'Tóxico', img: imgToxico },
+      { name: 'Fuego', img: imgFuego }
+    ];
+
+    // Controles de Teclado
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
+      if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+      if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') {
+        keys.up = true;
+        jump();
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+      if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+      if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') keys.up = false;
+    });
+
+    // Controles Táctiles
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      const touchX = e.touches[0].clientX;
+      const rect = canvas.getBoundingClientRect();
+      const canvasX = (touchX - rect.left) * (canvas.width / rect.width);
+
+      if (canvasX < player.x) {
+        player.vx = -player.speed;
+      } else if (canvasX > player.x + player.width) {
+        player.vx = player.speed;
+      }
+      jump();
+    });
+
+    canvas.addEventListener('touchend', () => { player.vx = 0; });
+
+    function jump() {
+      if (gameState === 'PLAYING' && player.isGrounded) {
+        player.vy = player.jumpForce;
+        player.isGrounded = false;
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      for(let i = 0; i < 20; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * 320,
+          radius: Math.random() * 3 + 1,
+          alpha: Math.random() * 0.4 + 0.1,
+          speedX: Math.random() * 0.5 + 0.2
+        });
+      }
+    }
+
+    function drawParallaxBackground() {
+      if (bgImage.complete && bgImage.naturalWidth !== 0) {
+        ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+      } else {
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      particles.forEach(p => {
+        p.x -= p.speedX;
+        if (p.x < 0) p.x = canvas.width;
+        ctx.fillStyle = "rgba(226, 232, 240, " + p.alpha + ")";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function drawPlayer() {
+      ctx.save();
+      ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
+
+      if (player.vy < 0) ctx.rotate(-0.12);
+      if (player.vy > 0) ctx.rotate(0.12);
+
+      // Sombra en el suelo
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+      ctx.beginPath();
+      const shadowY = player.groundY + player.height / 2 + 10 - (player.y + player.height / 2);
+      const shadowScale = Math.max(0.3, 1 - shadowY / 150);
+      ctx.ellipse(0, shadowY, 22 * shadowScale, 6 * shadowScale, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Animación de alas alternando fotogramas
+      let currentBeeImage = (Math.floor(frame / 8) % 2 === 0) ? beeFrame1 : beeFrame2;
+
+      if (currentBeeImage.complete && currentBeeImage.naturalWidth !== 0) {
+        ctx.drawImage(
+          currentBeeImage, 
+          -player.width / 2, 
+          -player.height / 2, 
+          player.width, 
+          player.height
+        );
+      } else {
+        ctx.fillStyle = '#facc15';
+        ctx.beginPath();
+        ctx.arc(0, 0, player.width / 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
+    }
+
+    function drawHUD() {
+  ctx.save();
+  
+  // 1. Dibujar el Recuadro Contenedor Ampliado (Ancho: 340px, Alto: 45px)
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+  ctx.strokeStyle = '#f59e0b';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  if (ctx.roundRect) {
+    ctx.roundRect(15, 15, 340, 45, 10);
+  } else {
+    ctx.rect(15, 15, 340, 45);
+  }
+  ctx.fill();
+  ctx.stroke();
+
+  // 2. Configurar Alineación del Texto (Centrado Verticalmente en Y = 38)
+  ctx.textBaseline = 'middle';
+  ctx.font = 'bold 14px sans-serif';
+
+  // Puntaje (Izquierda)
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillText(`Puntos: ${score}`, 25, 38);
+
+  // EPP Recolectado (Centro)
+  ctx.fillStyle = '#38bdf8';
+  ctx.fillText(`EPP: ${eppCount}`, 135, 38);
+
+  // Corazones de Vida (Derecha, distribuidos proporcionalmente dentro de la caja)
+  ctx.font = '14px sans-serif';
+  const startHeartX = 220;
+  for (let i = 0; i < lives; i++) {
+    ctx.fillText('❤️', startHeartX + (i * 22), 38);
+  }
+
+  ctx.restore();
+}
+
+    function spawnObjects() {
+      if (frame % 85 === 0) {
+        const type = eppTypes[Math.floor(Math.random() * eppTypes.length)];
+        items.push({
+          x: canvas.width + 40,
+          y: Math.random() < 0.5 ? 210 : 285,
+          width: 60,  // Modifica el ancho del EPP aquí
+          height: 60, // Modifica el alto del EPP aquí
+          type: type
+        });
+      }
+
+      if (frame % 125 === 0) {
+        const type = hazardTypes[Math.floor(Math.random() * hazardTypes.length)];
+        obstacles.push({
+          x: canvas.width + 40,
+          y: 305,
+          width: 120,  // Modifica el ancho del obstáculo aquí
+          height: 90, // Modifica el alto del obstáculo aquí
+          type: type
+        });
+      }
+    }
+
+    function update() {
+      if (gameState !== 'PLAYING') return;
+
+      frame++;
+      gameSpeed = 5.2 + Math.floor(score / 120) * 0.4;
+
+      if (keys.left && player.x > 15) player.x -= player.speed;
+      if (keys.right && player.x < canvas.width - player.width - 15) player.x += player.speed;
+      player.x += player.vx;
+
+      player.vy += player.gravity;
+      player.y += player.vy;
+
+      if (player.y >= player.groundY) {
+        player.y = player.groundY;
+        player.vy = 0;
+        player.isGrounded = true;
+      }
+
+      for (let i = items.length - 1; i >= 0; i--) {
+        items[i].x -= gameSpeed;
+        if (checkCollision(player, items[i])) {
+          score += items[i].type.points;
+          eppCount++;
+          items.splice(i, 1);
+          continue;
+        }
+        if (items[i].x < -60) items.splice(i, 1);
+      }
+
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        obstacles[i].x -= gameSpeed;
+        if (checkCollision(player, obstacles[i])) {
+          lives--;
+          hazardHits++;
+          obstacles.splice(i, 1);
+          if (lives <= 0) gameOver();
+          continue;
+        }
+        if (obstacles[i].x < -60) obstacles.splice(i, 1);
+      }
+
+      spawnObjects();
+    }
+
+    function checkCollision(a, b) {
+      return a.x < b.x + b.width - 8 &&
+             a.x + a.width - 8 > b.x &&
+             a.y < b.y + b.height - 8 &&
+             a.y + a.height - 8 > b.y;
+    }
+
+    function render() {
+      drawParallaxBackground();
+
+      // Dibujar EPP
+      items.forEach(item => {
+        if (item.type.img && item.type.img.complete && item.type.img.naturalWidth !== 0) {
+          ctx.drawImage(item.type.img, item.x, item.y, item.width, item.height);
+        } else {
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillRect(item.x, item.y, item.width, item.height);
+        }
+      });
+
+      // Dibujar Obstáculos
+      obstacles.forEach(obs => {
+        if (obs.type.img && obs.type.img.complete && obs.type.img.naturalWidth !== 0) {
+          ctx.drawImage(obs.type.img, obs.x, obs.y, obs.width, obs.height);
+        } else {
+          ctx.fillStyle = '#ef4444';
+          ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+        }
+      });
+
+      drawPlayer();
+      drawHUD();
+    }
+
+    function gameLoop() {
+      update();
+      render();
+      if (gameState === 'PLAYING') {
+        requestAnimationFrame(gameLoop);
+      }
+    }
+
+    function startGame() {
+      gameState = 'PLAYING';
+      score = 0;
+      lives = 3;
+      eppCount = 0;
+      hazardHits = 0;
+      frame = 0;
+      obstacles = [];
+      items = [];
+      player.x = 100;
+      player.y = player.groundY;
+
+      startScreen.classList.add('hidden');
+      gameOverScreen.classList.add('hidden');
+      initParticles();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function gameOver() {
+      gameState = 'GAMEOVER';
+
+      // Cálculo de porcentaje de efectividad
+      const totalInteractions = eppCount + hazardHits;
+      const accuracyPercentage = totalInteractions > 0 
+        ? Math.round((eppCount / totalInteractions) * 100) 
+        : 0;
+
+      // Actualizar pantalla de resultados
+      statScore.textContent = score;
+      statHits.textContent = eppCount;
+      statMisses.textContent = hazardHits;
+      statAccuracy.textContent = `${accuracyPercentage}%`;
+
+      gameOverScreen.classList.remove('hidden');
+    }
+
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', startGame);
+
+    initParticles();
+    drawParallaxBackground();
+    drawPlayer();
+  </script>
+</body>
+</html>
+```eor
+
+### Configuración Adicional:
+1. **Logo de Beta**: Guarda el logo de BETA con el nombre `logo_beta.png` en la misma carpeta que el archivo `index.html`. Aparecerá automáticamente en la parte superior del Game Over y Pantalla de Inicio.
+2. **Facebook URL**: En la línea 121, puedes cambiar la URL `https://www.facebook.com/` por la dirección exacta de tu página de Facebook.
