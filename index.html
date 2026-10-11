@@ -419,7 +419,7 @@
     function spawnObjects() {
       if (frame % 85 === 0) {
         const type = eppTypes[Math.floor(Math.random() * eppTypes.length)];
-        items.push({ x: canvas.width + 40, y: Math.random() < 0.5 ? 210 : 285, width: 60, height: 60, type: type });
+        items.push({ x: canvas.width + 40, y: Math.random() < 0.5 ? 210 : 285, width: 40, height: 40, type: type });
       }
 
       if (frame % 125 === 0) {
