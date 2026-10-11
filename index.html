@@ -84,7 +84,6 @@
       100% { transform: rotate(0deg); }
     }
 
-    /* Solo se activa si el dispositivo es pantalla chica y está en vertical */
     @media screen and (max-width: 850px) and (orientation: portrait) {
       #rotate-device-notice {
         display: flex;
@@ -202,13 +201,13 @@
 
     .hidden { display: none !important; }
 
-    /* CONTROLES TÁCTILES */
+    /* CONTROLES TÁCTILES MÁS GRANDES Y CÓMODOS */
     .touch-controls {
       position: absolute;
-      bottom: 18px;
-      left: 18px;
-      right: 18px;
-      height: 52px;
+      bottom: 22px;
+      left: 20px;
+      right: 20px;
+      height: 64px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -218,51 +217,55 @@
 
     .d-pad {
       display: flex;
-      gap: 12px;
+      gap: 15px;
       pointer-events: auto;
     }
 
     .touch-btn {
-      width: 50px;
-      height: 50px;
-      background: rgba(15, 23, 42, 0.45);
-      border: 1.5px solid rgba(255, 255, 255, 0.4);
+      width: 64px;
+      height: 64px;
+      background: rgba(15, 23, 42, 0.55);
+      border: 2px solid rgba(255, 255, 255, 0.5);
       border-radius: 50%;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 1.6rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(3px);
       touch-action: manipulation;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
     .touch-btn:active {
-      background: rgba(250, 204, 21, 0.6);
+      background: rgba(250, 204, 21, 0.75);
       border-color: #facc15;
       color: #000;
+      transform: scale(0.95);
     }
 
     .jump-zone {
-      width: 74px;
-      height: 50px;
-      background: rgba(245, 158, 11, 0.3);
-      border: 1.5px solid rgba(245, 158, 11, 0.65);
-      border-radius: 14px;
+      width: 92px;
+      height: 64px;
+      background: rgba(245, 158, 11, 0.4);
+      border: 2px solid rgba(245, 158, 11, 0.75);
+      border-radius: 16px;
       color: #fff;
       font-weight: bold;
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       display: flex;
       align-items: center;
       justify-content: center;
       pointer-events: auto;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(3px);
       touch-action: manipulation;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
     .jump-zone:active {
-      background: rgba(245, 158, 11, 0.7);
+      background: rgba(245, 158, 11, 0.85);
       color: #000;
+      transform: scale(0.95);
     }
   </style>
 </head>
@@ -327,7 +330,7 @@
       </a>
     </div>
 
-    <!-- CONTROLES TÁCTILES -->
+    <!-- CONTROLES TÁCTILES VISIBLES EN PANTALLA -->
     <div id="touch-controls" class="touch-controls hidden">
       <div class="d-pad">
         <div class="touch-btn" id="btn-left">⬅️</div>
