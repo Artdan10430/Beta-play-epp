@@ -17,7 +17,7 @@
       height: 100%;
       background: #0f172a;
       color: #f8fafc;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: system-ui, -apple-system, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -25,11 +25,11 @@
       touch-action: none;
     }
 
-    /* CONTENEDOR PRINCIPAL AUTO-ADAPTABLE */
+    /* CONTENEDOR PRINCIPAL DEL JUEGO */
     #game-container {
       position: relative;
       width: 100vw;
-      height: 56.25vw; /* 16:9 */
+      height: 56.25vw; /* Proporción 16:9 */
       max-width: 850px;
       max-height: 478px;
       background: #000;
@@ -39,7 +39,6 @@
       border-radius: 8px;
     }
 
-    /* Ajuste responsivo para monitores y pantalla completa */
     @media (min-aspect-ratio: 16/9) {
       #game-container {
         width: calc(100vh * 16 / 9);
@@ -51,7 +50,7 @@
       }
     }
 
-    /* AVISO DE ROTACIÓN SOLO EN MÓVILES EN VERTICAL */
+    /* AVISO DE GIRAR PANTALLA EN CELULAR (SOLO VERTICAL) */
     #rotate-device-notice {
       display: none;
       position: fixed;
@@ -65,19 +64,19 @@
       padding: 20px;
     }
     #rotate-device-notice .icon {
-      font-size: 3.5rem;
-      margin-bottom: 15px;
+      font-size: 3rem;
+      margin-bottom: 10px;
       animation: rotateAnim 2s infinite ease-in-out;
     }
     #rotate-device-notice h2 {
       color: #facc15;
-      font-size: 1.4rem;
-      margin-bottom: 8px;
+      font-size: 1.3rem;
+      margin-bottom: 6px;
     }
     #rotate-device-notice p {
       color: #cbd5e1;
-      font-size: 0.9rem;
-      max-width: 300px;
+      font-size: 0.85rem;
+      max-width: 280px;
     }
     @keyframes rotateAnim {
       0% { transform: rotate(0deg); }
@@ -85,6 +84,7 @@
       100% { transform: rotate(0deg); }
     }
 
+    /* Solo se activa si el dispositivo es pantalla chica y está en vertical */
     @media screen and (max-width: 850px) and (orientation: portrait) {
       #rotate-device-notice {
         display: flex;
@@ -97,7 +97,7 @@
       display: block;
     }
 
-    /* PANTALLAS DE OVERLAY (INICIO Y GAME OVER) */
+    /* CAPAS FLOTANTES (INICIO Y GAME OVER) */
     .overlay {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -114,7 +114,7 @@
     }
 
     .logo-img {
-      max-height: 38px;
+      max-height: 36px;
       width: auto;
     }
 
@@ -122,12 +122,12 @@
       font-size: 1.2rem;
       color: #facc15;
       text-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
-      margin: 2px 0;
+      margin: 0;
     }
 
     .overlay p {
-      font-size: 0.75rem;
-      max-width: 400px;
+      font-size: 0.72rem;
+      max-width: 380px;
       color: #cbd5e1;
     }
 
@@ -137,8 +137,8 @@
       border-radius: 6px;
       padding: 6px 12px;
       text-align: left;
-      max-width: 400px;
-      font-size: 0.72rem;
+      max-width: 380px;
+      font-size: 0.7rem;
       color: #e2e8f0;
     }
 
@@ -169,7 +169,7 @@
     }
 
     .stat-card .lbl {
-      font-size: 0.58rem;
+      font-size: 0.55rem;
       color: #94a3b8;
       text-transform: uppercase;
     }
@@ -178,8 +178,8 @@
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
       color: #000;
       font-weight: 800;
-      font-size: 0.88rem;
-      padding: 7px 22px;
+      font-size: 0.85rem;
+      padding: 8px 24px;
       border: none;
       border-radius: 18px;
       cursor: pointer;
@@ -202,13 +202,13 @@
 
     .hidden { display: none !important; }
 
-    /* CONTROLES TÁCTILES ELEVADOS Y CÓMODOS */
+    /* CONTROLES TÁCTILES */
     .touch-controls {
       position: absolute;
-      bottom: 20px;
-      left: 20px;
-      right: 20px;
-      height: 55px;
+      bottom: 18px;
+      left: 18px;
+      right: 18px;
+      height: 52px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -223,13 +223,13 @@
     }
 
     .touch-btn {
-      width: 52px;
-      height: 52px;
+      width: 50px;
+      height: 50px;
       background: rgba(15, 23, 42, 0.45);
       border: 1.5px solid rgba(255, 255, 255, 0.4);
       border-radius: 50%;
       color: rgba(255, 255, 255, 0.9);
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -244,8 +244,8 @@
     }
 
     .jump-zone {
-      width: 76px;
-      height: 52px;
+      width: 74px;
+      height: 50px;
       background: rgba(245, 158, 11, 0.3);
       border: 1.5px solid rgba(245, 158, 11, 0.65);
       border-radius: 14px;
@@ -268,11 +268,11 @@
 </head>
 <body>
 
-  <!-- AVISO DE ROTACIÓN MÓVIL -->
+  <!-- AVISO DE GIRAR TELÉFONO -->
   <div id="rotate-device-notice">
     <div class="icon">📱🔄</div>
     <h2>Gira tu teléfono</h2>
-    <p>Para la mejor experiencia de juego, coloca tu pantalla en modo horizontal.</p>
+    <p>Coloca tu pantalla en modo horizontal para comenzar a jugar.</p>
   </div>
 
   <div id="game-container">
@@ -327,7 +327,7 @@
       </a>
     </div>
 
-    <!-- CONTROLES TÁCTILES VISIBLES EN PANTALLA -->
+    <!-- CONTROLES TÁCTILES -->
     <div id="touch-controls" class="touch-controls hidden">
       <div class="d-pad">
         <div class="touch-btn" id="btn-left">⬅️</div>
@@ -341,7 +341,6 @@
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
-    const container = document.getElementById('game-container');
     const startScreen = document.getElementById('start-screen');
     const gameOverScreen = document.getElementById('game-over-screen');
     const touchControls = document.getElementById('touch-controls');
@@ -422,7 +421,7 @@
       { name: 'Fuego', img: imgFuego }
     ];
 
-    // Controles de Teclado (PC)
+    // Teclado (PC)
     window.addEventListener('keydown', (e) => {
       if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
       if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
@@ -438,7 +437,7 @@
       if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') keys.up = false;
     });
 
-    // Eventos Táctiles (Móviles)
+    // Controles táctiles
     const btnLeft = document.getElementById('btn-left');
     const btnRight = document.getElementById('btn-right');
     const btnJump = document.getElementById('btn-jump');
@@ -648,16 +647,6 @@
       }
     }
 
-    function requestFullScreenMobile() {
-      if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
-        if (container.requestFullscreen) {
-          container.requestFullscreen().catch(() => {});
-        } else if (container.webkitRequestFullscreen) {
-          container.webkitRequestFullscreen().catch(() => {});
-        }
-      }
-    }
-
     function startGame() {
       gameState = 'PLAYING';
       score = 0;
@@ -669,8 +658,6 @@
       items = [];
       player.x = 100;
       player.y = player.groundY;
-
-      requestFullScreenMobile();
 
       bgMusic.currentTime = 0;
       bgMusic.play().catch(e => {});
